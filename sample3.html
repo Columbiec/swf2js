@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1.0" />
+    <script type="text/javascript" src="./javascripts/swf2js.js"></script>
+    <title>swf2js sample</title>
+</head>
+<body style="margin: 0; padding: 0; background-color: #000000;">
+<script type="text/javascript">
+    var _root = swf2js.createRootMovieClip(240, 240, 30);
+
+    // 基本的にはFLASHのmethodと同名で実装
+    // 空のMovieClipを作成
+    var mc1 = _root.createEmptyMovieClip('MC1', 1);
+
+    // SWFを読み込む
+    mc1.loadMovie("sample/model.swf");
+
+    // 後はよしなに
+    mc1.addEventListener("data", function()
+    {
+        this._x = 120;
+        this._y = 30;
+        this._xscale = 50;
+        this._yscale = 50;
+    });
+
+    var x = 10;
+    // オリジナルのアクションはイベントとして追加
+    var onEnterFrame = function()
+    {
+        this._x++;
+        var width = this._width;
+        if (this._x > 240)
+            this._x = -width;
+    };
+
+    mc1.addEventListener("onEnterFrame", onEnterFrame);
+    mc1.addEventListener('press', function()
+    {
+        this.removeEventListener("onEnterFrame");
+        this.startDrag(false);
+        this._alpha = 50;
+    });
+
+    mc1.addEventListener('release', function()
+    {
+        this.stopDrag();
+        this._alpha = 100;
+        this.addEventListener("onEnterFrame", onEnterFrame);
+    });
+
+    var _root2 = swf2js.createRootMovieClip(240, 240, 12, {tagId: "test"});
+    var mc2 = _root2.createEmptyMovieClip('MC2', 1);
+    mc2.loadMovie("sample/mogura.swf");
+
+</script>
+
+<div id="test" style="width: 240px; height: 240px;"></div>
+
+</body>
+</html>
